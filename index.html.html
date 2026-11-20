@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>페르만 제국 — 캐릭터챗 안내</title>
+
+  <!-- Google Fonts: 황실 세리프(Noto Serif KR, Gowun Batang, Cormorant Garamond) + 본문(Noto Sans KR) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600&family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- html2canvas 기본 CDN (로드 실패 시 하단 스크립트에서 jsdelivr로 자동 폴백) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+
+  <style>
+    /* ==========================================================================
+       디자인 토큰 (다크 로맨스 판타지 — 버건디 & 앤틱 골드 팔레트)
+       ========================================================================== */
+    :root {
+      --bg-obsidian: #110a0d;
+      --bg-burgundy: #1b1015;
+      --surface-velvet: #1b1015;
+      --surface-elevated: #23141b;
+      --surface-inset: #150c10;
+      --gold-antique: #c9a461;
+      --gold-champagne: #e5cc93;
+      --gold-border: rgba(201, 164, 97, 0.38);
+      --gold-hairline: rgba(201, 164, 97, 0.22);
+      --text-ivory: #f2e9dc;
+      --text-rose-gold: #ccb8a8;
+      --text-muted: #9e877b;
+      --font-serif: 'Noto Serif KR', 'Gowun Batang', Georgia, serif;
+      --font-sans: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-en: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg-obsidian);
+      color: var(--text-ivory);
+      font-family: var(--font-sans);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       캡쳐 대상 영역 (#capture-area)
+       - 완전 정적 포스터 영역 (호버/전환/클릭 요소 및 html2canvas 비호환 CSS 배제)
+       ========================================================================== */
+    #capture-area {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg-obsidian);
+      background-image: linear-gradient(180deg, #1f1017 0%, #160c11 40%, #110a0d 100%);
+      padding: 64px 32px 104px;
+    }
+
+    .poster-container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    /* ==========================================================================
+       상단 히어로 인용구 헤더
+       ========================================================================== */
+    .hero-header {
+      position: relative;
+      padding: 50px 40px;
+      margin-bottom: 58px;
+      text-align: center;
+      background-color: #1c1016;
+      background-image: linear-gradient(180deg, #22131a 0%, #190e13 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.52);
+    }
+
+    .hero-inner-border {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      bottom: 8px;
+      left: 8px;
+      border: 1px solid var(--gold-hairline);
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    .ornament-divider {
+      display: block;
+      margin: 0 auto;
+      width: 210px;
+      height: 20px;
+      color: var(--gold-antique);
+    }
+
+    .ornament-top {
+      margin-bottom: 22px;
+    }
+
+    .ornament-bottom {
+      margin-top: 22px;
+    }
+
+    .hero-quote {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-serif);
+      font-size: clamp(1.22rem, 2.5vw, 1.72rem);
+      font-weight: 500;
+      color: var(--gold-champagne);
+      letter-spacing: 0.03em;
+      line-height: 1.7;
+    }
+
+    /* ==========================================================================
+       섹션 블록 및 장식 헤더
+       ========================================================================== */
+    .section-block {
+      margin-bottom: 54px;
+    }
+
+    .section-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .section-title-kr {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .section-label-en {
+      font-family: var(--font-en);
+      font-size: 0.84rem;
+      font-weight: 600;
+      letter-spacing: 0.24em;
+      color: var(--gold-antique);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-hairline {
+      flex: 1;
+      height: 1px;
+      background-image: linear-gradient(90deg, rgba(201, 164, 97, 0.45) 0%, rgba(201, 164, 97, 0.05) 100%);
+    }
+
+    /* ==========================================================================
+       공통 황실 벨벳 카드
+       ========================================================================== */
+    .imperial-card {
+      background-color: var(--surface-velvet);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
+    }
+
+    /* ==========================================================================
+       이중 골드 테두리 3:2 인물 액자 프레임
+       ========================================================================== */
+    .portrait-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      padding: 6px;
+      background-color: var(--surface-inset);
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+    }
+
+    .portrait-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--gold-hairline);
+      border-radius: 3px;
+      overflow: hidden;
+      background-color: #160c11;
+      background-image: linear-gradient(135deg, #24131b 0%, #140a0f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portrait-placeholder {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px;
+      text-align: center;
+      color: var(--text-rose-gold);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .placeholder-diamond {
+      color: var(--gold-antique);
+      font-size: 0.95rem;
+    }
+
+    .placeholder-text {
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      color: var(--text-rose-gold);
+    }
+
+    .portrait-inner img {
+      position: relative;
+      z-index: 2;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* ==========================================================================
+       메인 캐릭터 피처드 카드 (2열 레이아웃)
+       ========================================================================== */
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 34px;
+      padding: 32px;
+      align-items: start;
+    }
+
+    .character-header {
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--gold-hairline);
+    }
+
+    .character-name-main {
+      font-family: var(--font-serif);
+      font-size: 1.62rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      letter-spacing: 0.04em;
+    }
+
+    .character-name-sub {
+      font-family: var(--font-serif);
+      font-size: 1.36rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      letter-spacing: 0.04em;
+    }
+
+    .profile-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 22px;
+    }
+
+    .profile-list li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--text-ivory);
+    }
+
+    .profile-list li::before {
+      content: "◆";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      font-size: 0.5rem;
+      color: var(--gold-antique);
+    }
+
+    /* 타인과의 관계 섹션 */
+    .relations-block {
+      padding-top: 18px;
+      border-top: 1px solid var(--gold-hairline);
+    }
+
+    .relations-title {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gold-antique);
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .relation-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .relation-item {
+      background-color: var(--surface-inset);
+      border: 1px solid var(--gold-hairline);
+      border-left: 2px solid var(--gold-antique);
+      border-radius: 4px;
+      padding: 11px 14px;
+    }
+
+    .relation-name {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 0.93rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      margin-bottom: 3px;
+    }
+
+    .relation-desc {
+      font-size: 0.89rem;
+      color: var(--text-rose-gold);
+      line-height: 1.65;
+    }
+
+    /* ==========================================================================
+       조연 섹션 (2열 균형 그리드)
+       ========================================================================== */
+    .supporting-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .supporting-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .supporting-card .portrait-frame {
+      margin-bottom: 20px;
+    }
+
+    .supporting-card .profile-list {
+      margin-bottom: 0;
+    }
+
+    .supporting-card .relations-block {
+      margin-top: 20px;
+    }
+
+    /* ==========================================================================
+       하단 가이드 섹션 (비대칭 1.3fr : 1fr 2열 그리드)
+       ========================================================================== */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .guide-panel {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--gold-hairline);
+    }
+
+    .panel-title-kr {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      letter-spacing: 0.04em;
+    }
+
+    .panel-label-en {
+      font-family: var(--font-en);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--gold-antique);
+      text-transform: uppercase;
+    }
+
+    /* 시작 설정 리스트 */
+    .scenario-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .scenario-card {
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--gold-hairline);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+
+    .scenario-title {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scenario-title::before {
+      content: "❖";
+      font-size: 0.72rem;
+      color: var(--gold-antique);
+    }
+
+    .scenario-desc {
+      font-size: 0.92rem;
+      color: var(--text-rose-gold);
+      line-height: 1.65;
+    }
+
+    /* 추천 페르소나 리스트 */
+    .persona-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .persona-item {
+      background-color: var(--surface-elevated);
+      border: 1px solid var(--gold-hairline);
+      border-radius: 6px;
+      padding: 13px 16px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-ivory);
+    }
+
+    .persona-note {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--gold-hairline);
+      font-size: 0.87rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       우측 하단 플로팅 캡쳐 컨트롤 영역 (캡쳐 시 제외)
+       ========================================================================== */
+    .floating-wrapper {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    /* 이미지 선택 팝오버 */
+    .image-popover {
+      display: none;
+      width: 280px;
+      padding: 14px;
+      background-color: #1c1016;
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75);
+    }
+
+    .image-popover.is-open {
+      display: block;
+    }
+
+    .popover-title {
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+      margin-bottom: 4px;
+    }
+
+    .popover-desc {
+      font-size: 0.78rem;
+      color: var(--text-rose-gold);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .popover-batch-btn {
+      width: 100%;
+      padding: 9px 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--gold-antique);
+      background-color: #2b1822;
+      color: var(--gold-champagne);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .popover-batch-btn:hover {
+      background-color: #381f2c;
+    }
+
+    .popover-char-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .popover-char-btn {
+      padding: 8px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--gold-hairline);
+      background-color: #150c10;
+      color: var(--text-ivory);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .popover-char-btn:hover {
+      border-color: var(--gold-antique);
+      background-color: #24141c;
+    }
+
+    .popover-char-btn.is-loaded {
+      border-color: var(--gold-antique);
+      color: var(--gold-champagne);
+    }
+
+    .floating-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background-color: #180d12;
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+    }
+
+    .ctrl-btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px 16px;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .ctrl-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .ctrl-btn-secondary {
+      background-color: #26141d;
+      color: var(--text-ivory);
+      border: 1px solid var(--gold-border);
+    }
+
+    .ctrl-btn-secondary:hover:not(:disabled) {
+      background-color: #321b26;
+      border-color: var(--gold-antique);
+    }
+
+    .ctrl-btn-primary {
+      background-image: linear-gradient(135deg, #c9a461 0%, #a07d3e 100%);
+      color: #110a0d;
+      font-weight: 600;
+      border: 1px solid #e5cc93;
+    }
+
+    .ctrl-btn-primary:hover:not(:disabled) {
+      background-image: linear-gradient(135deg, #d8b573 0%, #b18c4a 100%);
+    }
+
+    .hidden-file-input {
+      display: none;
+    }
+
+    /* ==========================================================================
+       인페이지 알림 메시지 박스 (캡쳐 시 제외)
+       ========================================================================== */
+    .notice-toast {
+      position: fixed;
+      right: 24px;
+      bottom: 94px;
+      z-index: 1002;
+      max-width: 400px;
+      padding: 14px 18px;
+      background-color: #24121b;
+      border: 1px solid var(--gold-antique);
+      border-radius: 8px;
+      color: var(--text-ivory);
+      font-size: 0.86rem;
+      line-height: 1.6;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+      display: none;
+    }
+
+    .notice-toast.is-visible {
+      display: block;
+    }
+
+    .notice-toast-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .notice-toast-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      color: var(--gold-champagne);
+      font-size: 0.9rem;
+    }
+
+    .notice-toast-close {
+      background: none;
+      border: none;
+      color: var(--text-rose-gold);
+      font-size: 1.05rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      line-height: 1;
+    }
+
+    /* ==========================================================================
+       캡쳐 결과 미리보기 모달 (자동 다운로드 차단 시 우클릭 저장 지원)
+       ========================================================================== */
+    .preview-modal-backdrop {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1100;
+      background-color: rgba(10, 5, 8, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .preview-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .preview-modal {
+      width: 100%;
+      max-width: 720px;
+      max-height: 88vh;
+      background-color: #1c1016;
+      border: 1px solid var(--gold-antique);
+      border-radius: 10px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gold-hairline);
+    }
+
+    .preview-modal-title {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold-champagne);
+    }
+
+    .preview-modal-close {
+      background: none;
+      border: 1px solid var(--gold-hairline);
+      border-radius: 4px;
+      color: var(--text-ivory);
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .preview-modal-body {
+      padding: 18px 20px;
+      overflow-y: auto;
+      text-align: center;
+      background-color: #12090d;
+    }
+
+    .preview-modal-hint {
+      font-size: 0.83rem;
+      color: var(--text-rose-gold);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .preview-image-box {
+      border: 1px solid var(--gold-hairline);
+      border-radius: 6px;
+      overflow: hidden;
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .preview-image-box img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .preview-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--gold-hairline);
+      background-color: #1a0f14;
+    }
+
+    /* ==========================================================================
+       반응형 레이아웃 (태블릿 및 모바일)
+       ========================================================================== */
+    @media (max-width: 860px) {
+      .featured-card {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px;
+      }
+
+      .supporting-grid,
+      .guide-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      #capture-area {
+        padding: 36px 16px 116px;
+      }
+
+      .hero-header {
+        padding: 36px 20px;
+        margin-bottom: 40px;
+      }
+
+      .section-block {
+        margin-bottom: 42px;
+      }
+
+      .featured-card,
+      .supporting-card,
+      .guide-panel {
+        padding: 20px;
+      }
+
+      .floating-wrapper {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        align-items: stretch;
+      }
+
+      .image-popover {
+        width: 100%;
+      }
+
+      .floating-controls {
+        justify-content: stretch;
+      }
+
+      .ctrl-btn {
+        flex: 1;
+        padding: 12px 10px;
+        font-size: 0.83rem;
+      }
+
+      .notice-toast {
+        left: 16px;
+        right: 16px;
+        bottom: 88px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========================================================================
+       캡쳐 대상 영역 (#capture-area) — 완전 정적 포스터 콘텐츠
+       ======================================================================== -->
+  <div id="capture-area">
+    <main class="poster-container">
+      <!-- 상단 메인 인용구 헤더 -->
+      <header class="hero-header">
+        <div class="hero-inner-border" aria-hidden="true"></div>
+
+        <svg class="ornament-divider ornament-top" viewBox="0 0 210 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line x1="0" y1="10" x2="82" y2="10" stroke="#c9a461" stroke-width="0.9" stroke-opacity="0.65" />
+          <line x1="128" y1="10" x2="210" y2="10" stroke="#c9a461" stroke-width="0.9" stroke-opacity="0.65" />
+          <path d="M105 2L113 10L105 18L97 10L105 2Z" stroke="#c9a461" stroke-width="1" />
+          <circle cx="105" cy="10" r="2.2" fill="#c9a461" />
+          <path d="M88 10L92 7.5L92 12.5L88 10Z" fill="#c9a461" fill-opacity="0.75" />
+          <path d="M122 10L118 7.5L118 12.5L122 10Z" fill="#c9a461" fill-opacity="0.75" />
+        </svg>
+
+        <blockquote class="hero-quote">
+          황제는 황후가 아닌 황비의 침실을 찾는다. 연정이 아닌 욕정을 따라.
+        </blockquote>
+
+        <svg class="ornament-divider ornament-bottom" viewBox="0 0 210 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line x1="0" y1="10" x2="82" y2="10" stroke="#c9a461" stroke-width="0.9" stroke-opacity="0.65" />
+          <line x1="128" y1="10" x2="210" y2="10" stroke="#c9a461" stroke-width="0.9" stroke-opacity="0.65" />
+          <path d="M105 2L113 10L105 18L97 10L105 2Z" stroke="#c9a461" stroke-width="1" />
+          <circle cx="105" cy="10" r="2.2" fill="#c9a461" />
+          <path d="M88 10L92 7.5L92 12.5L88 10Z" fill="#c9a461" fill-opacity="0.75" />
+          <path d="M122 10L118 7.5L118 12.5L122 10Z" fill="#c9a461" fill-opacity="0.75" />
+        </svg>
+      </header>
+
+      <!-- 메인 캐릭터 섹션 -->
+      <section class="section-block">
+        <div class="section-header">
+          <h2 class="section-title-kr">메인 캐릭터</h2>
+          <span class="section-label-en">MAIN CHARACTER</span>
+          <div class="section-hairline"></div>
+        </div>
+
+        <article class="imperial-card featured-card">
+          <!-- 좌측: 3:2 인물 프레임 -->
+          <div class="portrait-frame">
+            <div class="portrait-inner">
+              <div class="portrait-placeholder" aria-hidden="true">
+                <span class="placeholder-diamond">❖</span>
+                <span class="placeholder-text">칼리언.png (3:2)</span>
+              </div>
+              <img
+                src="칼리언.png"
+                alt="칼리언 페르만"
+                data-char="칼리언"
+                onload="this.dataset.broken='false'; this.style.display='block';"
+                onerror="this.dataset.broken='true'; this.style.display='none';"
+              >
+            </div>
+          </div>
+
+          <!-- 우측: 프로필 및 관계 -->
+          <div>
+            <div class="character-header">
+              <h3 class="character-name-main">칼리언 페르만</h3>
+            </div>
+
+            <ul class="profile-list">
+              <li>26세</li>
+              <li>페르만 제국의 황제</li>
+              <li>흑발과 금안</li>
+              <li>이성적이고 오만한 성격</li>
+            </ul>
+
+            <div class="relations-block">
+              <h4 class="relations-title">타인과의 관계</h4>
+              <ul class="relation-list">
+                <li class="relation-item">
+                  <span class="relation-name">당신</span>
+                  <p class="relation-desc">칼리언에게 당신은 욕정을 해소하기 위한 상대일 뿐, 애정은 없습니다. 관계가 끝난 후엔 뒤도 돌아보지 않고 자신의 방으로 돌아갑니다.</p>
+                </li>
+                <li class="relation-item">
+                  <span class="relation-name">황후 일레나</span>
+                  <p class="relation-desc">어린 시절부터 약혼하게 되며 함께한 소꿉친구. 이성적 감정은 없지만 친구로서의 애정은 존재.</p>
+                </li>
+                <li class="relation-item">
+                  <span class="relation-name">루카스 프랜시스</span>
+                  <p class="relation-desc">친우라 부를 수 있는, 믿을 수 있는 대상</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- 조연 섹션 -->
+      <section class="section-block">
+        <div class="section-header">
+          <h2 class="section-title-kr">조연</h2>
+          <span class="section-label-en">SUPPORTING</span>
+          <div class="section-hairline"></div>
+        </div>
+
+        <div class="supporting-grid">
+          <!-- 조연 1: 일레나 페르만 -->
+          <article class="imperial-card supporting-card">
+            <div class="portrait-frame">
+              <div class="portrait-inner">
+                <div class="portrait-placeholder" aria-hidden="true">
+                  <span class="placeholder-diamond">❖</span>
+                  <span class="placeholder-text">일레나.png (3:2)</span>
+                </div>
+                <img
+                  src="일레나.png"
+                  alt="일레나 페르만"
+                  data-char="일레나"
+                  onload="this.dataset.broken='false'; this.style.display='block';"
+                  onerror="this.dataset.broken='true'; this.style.display='none';"
+                >
+              </div>
+            </div>
+
+            <div class="character-header">
+              <h3 class="character-name-sub">일레나 페르만</h3>
+            </div>
+
+            <ul class="profile-list">
+              <li>24세</li>
+              <li>페르만 제국의 황후</li>
+              <li>연한 분홍빛 머리카락과 하늘색 눈</li>
+              <li>아델라이드 공작가 출신</li>
+              <li>감정적이고 질투가 많은 편. 겉으로는 착한 척 돌려말하는 편.</li>
+            </ul>
+
+            <div class="relations-block">
+              <h4 class="relations-title">타인과의 관계</h4>
+              <ul class="relation-list">
+                <li class="relation-item">
+                  <span class="relation-name">당신</span>
+                  <p class="relation-desc">질투의 대상</p>
+                </li>
+                <li class="relation-item">
+                  <span class="relation-name">칼리언</span>
+                  <p class="relation-desc">짝사랑의 대상</p>
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- 조연 2: 루카스 프랜시스 -->
+          <article class="imperial-card supporting-card">
+            <div class="portrait-frame">
+              <div class="portrait-inner">
+                <div class="portrait-placeholder" aria-hidden="true">
+                  <span class="placeholder-diamond">❖</span>
+                  <span class="placeholder-text">루카스.png (3:2)</span>
+                </div>
+                <img
+                  src="루카스.png"
+                  alt="루카스 프랜시스"
+                  data-char="루카스"
+                  onload="this.dataset.broken='false'; this.style.display='block';"
+                  onerror="this.dataset.broken='true'; this.style.display='none';"
+                >
+              </div>
+            </div>
+
+            <div class="character-header">
+              <h3 class="character-name-sub">루카스 프랜시스</h3>
+            </div>
+
+            <ul class="profile-list">
+              <li>26세</li>
+              <li>프랜시스 공작가의 공작이자 페르만 제국의 근위대장</li>
+              <li>금발과 녹색 눈</li>
+              <li>능글맞고 장난스러운 성격</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- 하단 비대칭 2열 가이드 섹션 (시작 설정 / 추천 페르소나) -->
+      <section class="section-block">
+        <div class="guide-grid">
+          <!-- 좌측: 시작 설정 -->
+          <div class="imperial-card guide-panel">
+            <div class="panel-header">
+              <h2 class="panel-title-kr">시작 설정</h2>
+              <span class="panel-label-en">STARTING SCENARIOS</span>
+            </div>
+
+            <div class="scenario-list">
+              <div class="scenario-card">
+                <h3 class="scenario-title">정사 후</h3>
+                <p class="scenario-desc">정사가 끝나고 미련없이 방을 나가려하는 칼리언을 잡을 수 있을까?</p>
+              </div>
+
+              <div class="scenario-card">
+                <h3 class="scenario-title">늦은 밤의 방문</h3>
+                <p class="scenario-desc">늦은 밤 유저를 찾아온 칼리언과 정사의 시작</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측: 추천 페르소나 -->
+          <div class="imperial-card guide-panel">
+            <div class="panel-header">
+              <h2 class="panel-title-kr">추천 페르소나</h2>
+              <span class="panel-label-en">RECOMMENDED PERSONA</span>
+            </div>
+
+            <ol class="persona-list">
+              <li class="persona-item">1. 타국의 공주</li>
+              <li class="persona-item">2. 일레나의 동생/사촌</li>
+            </ol>
+
+            <p class="persona-note">따로 설정하지 않아도 문제 없이 진행 가능</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       인페이지 알림 메시지 박스 (캡쳐 시 제외)
+       ======================================================================== -->
+  <div id="notice-toast" class="notice-toast" data-html2canvas-ignore="true" role="status" aria-live="polite">
+    <div class="notice-toast-header">
+      <span id="notice-toast-title" class="notice-toast-title">안내</span>
+      <button type="button" id="notice-toast-close" class="notice-toast-close" aria-label="닫기">&times;</button>
+    </div>
+    <p id="notice-toast-body"></p>
+  </div>
+
+  <!-- ========================================================================
+       우측 하단 플로팅 캡쳐 컨트롤 바 & 이미지 선택 팝오버 (캡쳐 시 제외)
+       ======================================================================== -->
+  <div class="floating-wrapper" data-html2canvas-ignore="true">
+    <!-- 이미지 선택 팝오버 -->
+    <div id="image-popover" class="image-popover" aria-label="캐릭터 이미지 선택">
+      <div class="popover-title">로컬 이미지 불러오기</div>
+      <p class="popover-desc">파일명에 캐릭터 이름이 있으면 한번에 넣을 수 있고, 아래에서 개별 지정도 가능합니다.</p>
+      <button type="button" id="batch-image-btn" class="popover-batch-btn">
+        여러 장 한번에 넣기 (파일명 자동 매칭)
+      </button>
+      <div class="popover-char-grid">
+        <button type="button" class="popover-char-btn" data-target-char="칼리언">칼리언</button>
+        <button type="button" class="popover-char-btn" data-target-char="일레나">일레나</button>
+        <button type="button" class="popover-char-btn" data-target-char="루카스">루카스</button>
+      </div>
+    </div>
+
+    <!-- 메인 컨트롤 바 -->
+    <div class="floating-controls">
+      <input type="file" id="batch-file-input" class="hidden-file-input" accept="image/*" multiple>
+      <input type="file" id="single-file-input" class="hidden-file-input" accept="image/*">
+      <button type="button" id="toggle-image-menu-btn" class="ctrl-btn ctrl-btn-secondary">
+        이미지 넣기
+      </button>
+      <button type="button" id="capture-btn" class="ctrl-btn ctrl-btn-primary">
+        화면 캡쳐 저장 (PNG)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       캡쳐 결과 미리보기 모달 (자동 다운로드 차단 시 우클릭 저장 가능, 캡쳐 시 제외)
+       ======================================================================== -->
+  <div id="preview-modal-backdrop" class="preview-modal-backdrop" data-html2canvas-ignore="true" role="dialog" aria-modal="true" aria-labelledby="preview-modal-title">
+    <div class="preview-modal">
+      <div class="preview-modal-header">
+        <span id="preview-modal-title" class="preview-modal-title">캡쳐 이미지 미리보기</span>
+        <button type="button" id="preview-close-btn" class="preview-modal-close">닫기</button>
+      </div>
+      <div class="preview-modal-body">
+        <p class="preview-modal-hint">
+          자동 다운로드가 시작되었습니다. 만약 브라우저나 미리보기 환경에서 다운로드가 차단된 경우, 아래 버튼을 누르거나 이미지를 <strong>우클릭 → "이미지를 다른 이름으로 저장"</strong>해 주세요.
+        </p>
+        <div class="preview-image-box">
+          <img id="preview-result-img" src="" alt="캡쳐된 캐릭터챗 안내 이미지">
+        </div>
+      </div>
+      <div class="preview-modal-footer">
+        <button type="button" id="preview-redownload-btn" class="ctrl-btn ctrl-btn-primary">
+          PNG 다시 다운로드
+        </button>
+        <button type="button" id="preview-close-footer-btn" class="ctrl-btn ctrl-btn-secondary">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const CAPTURE_FILENAME = '페르만_제국_캐릭터_안내.png';
+      const FALLBACK_CDN_URL = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+
+      const captureArea = document.getElementById('capture-area');
+      const captureBtn = document.getElementById('capture-btn');
+      const toggleImageMenuBtn = document.getElementById('toggle-image-menu-btn');
+      const imagePopover = document.getElementById('image-popover');
+      const batchImageBtn = document.getElementById('batch-image-btn');
+      const batchFileInput = document.getElementById('batch-file-input');
+      const singleFileInput = document.getElementById('single-file-input');
+      const charButtons = document.querySelectorAll('.popover-char-btn');
+
+      const noticeToast = document.getElementById('notice-toast');
+      const noticeTitle = document.getElementById('notice-toast-title');
+      const noticeBody = document.getElementById('notice-toast-body');
+      const noticeClose = document.getElementById('notice-toast-close');
+
+      const previewModalBackdrop = document.getElementById('preview-modal-backdrop');
+      const previewResultImg = document.getElementById('preview-result-img');
+      const previewCloseBtn = document.getElementById('preview-close-btn');
+      const previewCloseFooterBtn = document.getElementById('preview-close-footer-btn');
+      const previewRedownloadBtn = document.getElementById('preview-redownload-btn');
+
+      let toastTimer = null;
+      let pendingSingleChar = null;
+      let latestDownloadUrl = null;
+      let latestIsObjectUrl = false;
+
+      /**
+       * 인페이지 토스트 알림 표시 (alert() 미사용)
+       */
+      function showNotice(title, message, duration = 6500) {
+        noticeTitle.textContent = title;
+        noticeBody.textContent = message;
+        noticeToast.classList.add('is-visible');
+
+        if (toastTimer) clearTimeout(toastTimer);
+        if (duration > 0) {
+          toastTimer = setTimeout(() => {
+            noticeToast.classList.remove('is-visible');
+          }, duration);
+        }
+      }
+
+      noticeClose.addEventListener('click', () => {
+        noticeToast.classList.remove('is-visible');
+        if (toastTimer) clearTimeout(toastTimer);
+      });
+
+      /**
+       * html2canvas 로드 보장 (cdnjs 실패 시 jsdelivr 자동 폴백)
+       */
+      function ensureHtml2Canvas() {
+        if (typeof window.html2canvas === 'function') {
+          return Promise.resolve(window.html2canvas);
+        }
+
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = FALLBACK_CDN_URL;
+          script.async = true;
+          script.onload = () => {
+            if (typeof window.html2canvas === 'function') {
+              resolve(window.html2canvas);
+            } else {
+              reject(new Error('html2canvas 객체를 초기화하지 못했습니다.'));
+            }
+          };
+          script.onerror = () => {
+            reject(new Error('캡쳐 라이브러리(CDN)를 불러오지 못했습니다. 인터넷 연결 상태를 확인해 주세요.'));
+          };
+          document.head.appendChild(script);
+        });
+      }
+
+      /**
+       * File 객체를 안전한 Base64 Data URL로 변환하여 특정 캐릭터 이미지에 적용
+       */
+      function applyImageFileToCharacter(file, charName) {
+        return new Promise((resolve, reject) => {
+          const imgEl = document.querySelector(`img[data-char="${charName}"]`);
+          if (!imgEl) {
+            reject(new Error(`${charName} 이미지 영역을 찾을 수 없습니다.`));
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            imgEl.dataset.broken = 'false';
+            imgEl.src = event.target.result;
+            imgEl.style.display = 'block';
+
+            const btn = document.querySelector(`.popover-char-btn[data-target-char="${charName}"]`);
+            if (btn) {
+              btn.classList.add('is-loaded');
+              btn.textContent = `${charName} ✓`;
+            }
+            resolve(charName);
+          };
+          reader.onerror = () => reject(new Error(`${file.name} 파일을 읽지 못했습니다.`));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      /**
+       * 이미지 선택 팝오버 토글
+       */
+      toggleImageMenuBtn.addEventListener('click', () => {
+        imagePopover.classList.toggle('is-open');
+      });
+
+      /**
+       * 여러 장 한번에 넣기 (파일명 자동 매칭)
+       */
+      batchImageBtn.addEventListener('click', () => {
+        batchFileInput.value = '';
+        batchFileInput.click();
+      });
+
+      batchFileInput.addEventListener('change', async (event) => {
+        const files = Array.from(event.target.files || []);
+        if (!files.length) return;
+
+        const targetNames = ['칼리언', '일레나', '루카스'];
+        const tasks = [];
+
+        files.forEach((file) => {
+          const normalizedName = file.name.normalize('NFC');
+          const matchedChar = targetNames.find((name) => normalizedName.includes(name));
+          if (matchedChar) {
+            tasks.push(applyImageFileToCharacter(file, matchedChar));
+          }
+        });
+
+        if (tasks.length === 0) {
+          showNotice(
+            '파일명 매칭 실패',
+            '파일명에 "칼리언", "일레나", "루카스"가 포함된 파일을 선택하거나, 아래의 캐릭터별 개별 버튼을 이용해 주세요.'
+          );
+          return;
+        }
+
+        try {
+          const applied = await Promise.all(tasks);
+          imagePopover.classList.remove('is-open');
+          showNotice(
+            '이미지 적용 완료',
+            `${applied.join(', ')} 이미지가 안전하게 적용되었습니다. 이제 "화면 캡쳐 저장 (PNG)"을 눌러 저장해 주세요.`
+          );
+        } catch (err) {
+          showNotice('이미지 불러오기 오류', err.message || '이미지를 읽는 중 문제가 발생했습니다.');
+        }
+      });
+
+      /**
+       * 캐릭터별 개별 이미지 선택
+       */
+      charButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          pendingSingleChar = btn.dataset.targetChar;
+          singleFileInput.value = '';
+          singleFileInput.click();
+        });
+      });
+
+      singleFileInput.addEventListener('change', async (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file || !pendingSingleChar) return;
+
+        try {
+          const charName = await applyImageFileToCharacter(file, pendingSingleChar);
+          showNotice('이미지 적용 완료', `${charName} 이미지가 적용되었습니다.`, 3500);
+        } catch (err) {
+          showNotice('이미지 불러오기 오류', err.message || '이미지를 읽는 중 문제가 발생했습니다.');
+        } finally {
+          pendingSingleChar = null;
+        }
+      });
+
+      /**
+       * 파일 다운로드 실행 도우미
+       */
+      function triggerDownload(url) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = CAPTURE_FILENAME;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      /**
+       * 미리보기 모달 열기/닫기
+       */
+      function openPreviewModal(imageUrl) {
+        previewResultImg.src = imageUrl;
+        previewModalBackdrop.classList.add('is-open');
+      }
+
+      function closePreviewModal() {
+        previewModalBackdrop.classList.remove('is-open');
+      }
+
+      previewCloseBtn.addEventListener('click', closePreviewModal);
+      previewCloseFooterBtn.addEventListener('click', closePreviewModal);
+      previewModalBackdrop.addEventListener('click', (event) => {
+        if (event.target === previewModalBackdrop) closePreviewModal();
+      });
+
+      previewRedownloadBtn.addEventListener('click', () => {
+        if (latestDownloadUrl) {
+          triggerDownload(latestDownloadUrl);
+        }
+      });
+
+      /**
+       * 캡쳐 직전: 로컬 file:// 환경에서 Data URL이 아닌 로컬 이미지가 로드되어 있는지 사전 검사
+       */
+      function hasUnsafeLocalFileImages() {
+        if (window.location.protocol !== 'file:') return false;
+
+        const imgs = captureArea.querySelectorAll('img');
+        for (const img of imgs) {
+          const isVisible = img.style.display !== 'none' && img.dataset.broken !== 'true';
+          const isLoaded = img.complete && img.naturalWidth > 0;
+          const isSafeDataUrl = (img.getAttribute('src') || '').startsWith('data:');
+          if (isVisible && isLoaded && !isSafeDataUrl) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      /**
+       * #capture-area 고해상도 PNG 캡쳐 실행
+       */
+      captureBtn.addEventListener('click', async () => {
+        imagePopover.classList.remove('is-open');
+
+        // 1. file:// 환경에서 로컬 상대경로 이미지가 포함된 경우 브라우저 보안 오류 사전 안내
+        if (hasUnsafeLocalFileImages()) {
+          showNotice(
+            '로컬 이미지 보안 제한 안내',
+            '현재 PC 로컬 파일(file://)로 열려 있어 폴더에서 바로 불러온 이미지는 브라우저 보안 정책상 캡쳐가 차단됩니다. 옆의 "이미지 넣기" 버튼을 눌러 칼리언·일레나·루카스 이미지를 다시 선택해 넣은 뒤 캡쳐해 주세요.',
+            10000
+          );
+          return;
+        }
+
+        const originalLabel = captureBtn.textContent;
+        captureBtn.disabled = true;
+        captureBtn.textContent = '캡쳐 생성 중...';
+
+        try {
+          // 2. html2canvas 라이브러리 확보 (필요 시 보조 CDN 폴백)
+          const html2canvasFn = await ensureHtml2Canvas();
+
+          // 3. 웹 폰트 로딩 완료 대기 (실패해도 캡쳐는 계속 진행)
+          if (document.fonts && document.fonts.ready) {
+            try {
+              await document.fonts.ready;
+            } catch (_) {
+              // 폰트 대기 실패 무시
+            }
+          }
+
+          // 4. DOM 캡쳐 수행 (onclone에서 깨진/미로드 <img> 완전 제거)
+          const canvas = await html2canvasFn(captureArea, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#110a0d',
+            logging: false,
+            imageTimeout: 0,
+            onclone: (clonedDoc) => {
+              const clonedArea = clonedDoc.getElementById('capture-area');
+              if (!clonedArea) return;
+
+              const clonedImgs = clonedArea.querySelectorAll('img');
+              clonedImgs.forEach((clonedImg) => {
+                const charKey = clonedImg.getAttribute('data-char');
+                const origImg = charKey
+                  ? captureArea.querySelector(`img[data-char="${charKey}"]`)
+                  : null;
+
+                const isOrigBroken =
+                  !origImg ||
+                  origImg.dataset.broken === 'true' ||
+                  origImg.style.display === 'none' ||
+                  !origImg.complete ||
+                  origImg.naturalWidth === 0;
+
+                if (isOrigBroken || clonedImg.dataset.broken === 'true') {
+                  clonedImg.remove();
+                }
+              });
+            }
+          });
+
+          // 5. 기존 ObjectURL 정리 후 Blob(우선) 또는 DataURL로 변환
+          if (latestDownloadUrl && latestIsObjectUrl) {
+            URL.revokeObjectURL(latestDownloadUrl);
+            latestDownloadUrl = null;
+            latestIsObjectUrl = false;
+          }
+
+          const blob = await new Promise((resolve) => {
+            if (typeof canvas.toBlob === 'function') {
+              canvas.toBlob((result) => resolve(result), 'image/png');
+            } else {
+              resolve(null);
+            }
+          });
+
+          let imageUrl = '';
+          if (blob) {
+            imageUrl = URL.createObjectURL(blob);
+            latestDownloadUrl = imageUrl;
+            latestIsObjectUrl = true;
+          } else {
+            imageUrl = canvas.toDataURL('image/png');
+            latestDownloadUrl = imageUrl;
+            latestIsObjectUrl = false;
+          }
+
+          // 6. 자동 다운로드 시도 + 미리보기 모달 표시 (iframe 다운로드 차단 대비)
+          triggerDownload(imageUrl);
+          openPreviewModal(imageUrl);
+
+          showNotice(
+            '캡쳐 완료',
+            `${CAPTURE_FILENAME} 저장을 시작했습니다. 미리보기 창에서도 이미지를 저장할 수 있습니다.`,
+            4500
+          );
+        } catch (error) {
+          const errName = (error && error.name) ? error.name : '';
+          const errMsg = (error && error.message) ? error.message : String(error || '알 수 없는 오류');
+          const lowerMsg = errMsg.toLowerCase();
+
+          if (errName === 'SecurityError' || lowerMsg.includes('tainted') || lowerMsg.includes('insecure')) {
+            showNotice(
+              '보안 제한(CORS)으로 캡쳐 실패',
+              '로컬 이미지 보안 제한으로 캔버스 저장이 차단되었습니다. "이미지 넣기" 버튼을 통해 이미지를 직접 선택한 뒤 다시 캡쳐해 주세요.',
+              9500
+            );
+          } else {
+            showNotice(
+              '화면 캡쳐 오류',
+              `캡쳐 중 오류가 발생했습니다. (원인: ${errMsg})`,
+              8500
+            );
+          }
+        } finally {
+          captureBtn.disabled = false;
+          captureBtn.textContent = originalLabel;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
